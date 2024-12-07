@@ -34,4 +34,23 @@ public class EmployeeController {
         return employeeService.getEmployeeById(id).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable("id") Long id, @RequestBody Employee employee) {
+        return employeeService.getEmployeeById(id)
+                .map(savedEmployee -> {
+                    savedEmployee.setFirstName(employee.getFirstName());
+                    savedEmployee.setLastName(employee.getLastName());
+                    savedEmployee.setEmail(employee.getEmail());
+                    Employee updatedEmployee = employeeService.updateEmployee(savedEmployee);
+                    return ResponseEntity.ok(updatedEmployee);
+                }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteEmployeeById(@PathVariable("id") long employeeId) {
+        employeeService.deleteEmployee(employeeId);
+
+        return ResponseEntity.ok("Employee deleted successfully");
+    }
+
 }
